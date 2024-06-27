@@ -3,11 +3,53 @@ import numpy as np
 import mediapipe as mp
 import pyautogui
 import pickle
+import subprocess
 import time  # Import the time module
+from pptx import Presentation
+import os
 
 # load the model
 model_dict = pickle.load(open("./model.p", "rb"))
 model = model_dict["model"]
+
+presentationPath = "/Users/weidongcai/Documents/Big_Data_Presentation_CAI_1836167.pptx"
+
+print(presentationPath)
+# AppleScript commands to control PowerPoint
+script = f"""
+tell application "Microsoft PowerPoint"
+    activate
+    open "{presentationPath}"
+    set slideShowSettings to slide show settings of active presentation
+    set starting slide of slideShowSettings to 4
+    set ending slide of slideShowSettings to 4
+    run slide show slideShowSettings
+end tell
+"""
+
+subprocess.run(["osascript", "-e", script])
+
+
+# Move to the next slide
+script_next = """
+tell application "Microsoft PowerPoint"
+	set ssPresentation to slide show settings of active presentation
+	go to next slide slide show view of slide show window 1
+end tell
+"""
+
+script_previous = """
+tell application "Microsoft PowerPoint"
+	set ssPresentation to slide show settings of active presentation
+	go to previous slide slide show view of slide show window 1
+end tell
+"""
+subprocess.run(["osascript", "-e", script_next])
+time.sleep(1)
+subprocess.run(["osascript", "-e", script_next])
+time.sleep(1)
+subprocess.run(["osascript", "-e", script_previous])
+
 
 # Define keyboard shortcuts for controlling the presentation
 NEXT_SLIDE_KEY = "right"  # Change as needed
