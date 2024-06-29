@@ -33,7 +33,8 @@ for dir_ in os.listdir(DATA_DIR):
         continue
 
     for img_path in os.listdir(os.path.join(DATA_DIR, dir_)):
-
+        if img_path.startswith("."):
+            continue
         data_aux = []
 
         # save x horizontal and y vertical coordinates of all landmarks
@@ -86,4 +87,5 @@ labels = np.array(labels)
 
 # Save data and labels using pickle
 with open("data.pickle", "wb") as f:
+    print("Saving data to data.pickle")
     pickle.dump({"data": data, "labels": labels}, f)
