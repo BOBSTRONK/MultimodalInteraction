@@ -33,22 +33,20 @@ subprocess.run(["osascript", "-e", script])
 # Move to the next slide
 script_next = """
 tell application "Microsoft PowerPoint"
-	set ssPresentation to slide show settings of active presentation
 	go to next slide slide show view of slide show window 1
 end tell
 """
 
 script_previous = """
 tell application "Microsoft PowerPoint"
-	set ssPresentation to slide show settings of active presentation
 	go to previous slide slide show view of slide show window 1
 end tell
 """
 subprocess.run(["osascript", "-e", script_next])
-time.sleep(1)
-subprocess.run(["osascript", "-e", script_next])
-time.sleep(1)
+time.sleep(2)
 subprocess.run(["osascript", "-e", script_previous])
+time.sleep(2)
+subprocess.run(["osascript", "-e", script_next])
 
 
 # Define keyboard shortcuts for controlling the presentation
@@ -61,6 +59,8 @@ cap = cv2.VideoCapture(0)
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
+
+# go to a specific slide numer = press a number + enter
 
 hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
 while True:
