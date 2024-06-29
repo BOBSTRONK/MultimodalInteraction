@@ -1,0 +1,10 @@
+- collect_imgs.py is a script able to capture hand images and save them in the directory 'data'
+- create_dataset.py is a script able to create a dataset from the images in the directory 'data' and save it as data.pickle
+- create_dataset copy is just a test python file
+- train_classifier.py is a script able to train a model and save it as model.pickle
+- inference_classifier.py is a script able to test the model in real time
+
+TODO:
+- collezionare più dati di diverse persone, ad esempio 5 persone per train e 2 persone per test
+- FUSIONE
+- GUI per testare il modello in tempo reale
