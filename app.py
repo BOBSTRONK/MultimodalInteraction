@@ -14,6 +14,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 import subprocess
+from PIL import Image, ImageTk
 
 
 # AppleScript commands to control PowerPoint
@@ -45,6 +46,19 @@ def open_file_dialog():
     if file_path:
         # display the path of the selected file
         open_ppt(file_path)
+
+
+def image_processing(image_path):
+    image = Image.open(image_path)
+    resize_image = image.resize((150, 150))
+    img = ImageTk.PhotoImage(resize_image)
+    return img
+
+
+# Function to update the image when the selection changes
+def update_image(*args):
+    selected_gesture = default_Gesture_value.get()
+    image_label.config(image=gesture_images[selected_gesture])
 
 
 # Initialize the main application window
@@ -113,15 +127,28 @@ gesture_select_frame.pack(pady=5, padx=40, anchor="w")
 # Add input fields to the right panel
 entry_style = ttk.Style()
 entry_style.configure("Custom.TEntry", fieldbackground="white", borderwidth=0)
+
+image_1 = image_processing("/Users/weidongcai/Downloads/0_0.png")
+image_2 = image_processing("/Users/weidongcai/Downloads/WechatIMG208501.png")
+
+gesture_images = {
+    "👉": image_1,
+    "👈": image_2,
+    "🫲": image_1,
+    "🫱": image_2,
+}
 Options = [
     "👉",
     "👈",
     "🫲",
     "🫱",
 ]
+
+
 default_Gesture_value = tk.StringVar()
 # default value for select gesture menu
 default_Gesture_value.set(Options[0])
+default_Gesture_value.trace_add("write", update_image)
 select_gesture_menu = tk.OptionMenu(
     gesture_select_frame, default_Gesture_value, *Options
 )
@@ -138,9 +165,14 @@ select_file_label = tk.Label(
 select_file_label.pack(side=tk.LEFT)
 select_gesture_menu.pack(side=tk.LEFT)
 
+image_label = tk.Label(right_frame, image=image_1)
+image_label.pack()
+
+
 # Create a frame to hold the label and button
 file_select_frame = tk.Frame(right_frame)
 file_select_frame.pack(pady=5, padx=40, anchor="w")
+
 
 select_file_label = tk.Label(
     # parent widget
@@ -165,8 +197,9 @@ select_file_button = tk.Button(
 select_file_button.pack(side=tk.LEFT, padx=5)
 # select_file_label.grid(row=0,column=0)
 
-# Add a Generate button to the right panel
-generate_button = tk.Button(
+
+# Add a button to the right panel for start detection
+start_detection_button = tk.Button(
     right_frame,
     text="Start Detection",
     bg="white",
@@ -174,7 +207,13 @@ generate_button = tk.Button(
     font=("Helvetica", 12, "bold"),
     relief=tk.FLAT,
 )
-generate_button.pack(pady=20)
+start_detection_button.pack(pady=20)
+
+# image = Image.open("/Users/weidongcai/Downloads/WechatIMG208501.png")
+# resize_image = image.resize((100, 100))
+# img = ImageTk.PhotoImage(resize_image)
+# image_label = tk.Label(right_frame, image=img)
+# image_label.pack()
 
 # Run the application
 root.mainloop()
