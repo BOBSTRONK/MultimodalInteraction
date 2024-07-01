@@ -6,5 +6,12 @@
 
 TODO:
 - collezionare più dati di diverse persone, ad esempio 5 persone per train e 2 persone per test
-- FUSIONE
+- FUSIONE:
+    spostare la parte di controllo ppt dentro 'script_ppt' in 'main_script',
+    valore di controllo: detected_value
+
+    errore: dopo aver runnato per un po'
+    RuntimeError: Service "kGpuService", required by node palmdetectioncpu__ImageToTensorCalculator, was not provided and cannot be created: ; RET_CHECK failure (mediapipe/gpu/gl_context_nsgl.cc:117) context_Could not create an NSOpenGLContext
+    possible solution:
+    https://github.com/google-ai-edge/mediapipe/issues/3305 
 - GUI per testare il modello in tempo reale
