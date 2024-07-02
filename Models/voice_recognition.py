@@ -9,12 +9,12 @@ class VoiceRecognizer:
     keywords_next = [
         "switch to the next slide", "go to the next slide", "next slide", "change to the next slide", "move to the next slide",
         "switch to the next page", "go to the next page", "next page", "change to the next page", "move to the next page",
-        "next slide please", "next page please", "go on to the next slide", "go on to the next page", "go on"
+        "next slide please", "next page please", "go on to the next slide", "go on to the next page", "go on", "go next"
     ]
     keywords_previous = [
         "switch to the previous slide", "go to the previous slide", "previous slide", "change to the previous slide", "move to the previous slide",
         "switch to the previous page", "go to the previous page", "previous page", "change to the previous page", "move to the previous page",
-        "previous slide please", "previous page please", "go back to the previous slide", "go back to the previous page", "go back"
+        "previous slide please", "previous page please", "go back to the previous slide", "go back to the previous page", "go back", "go previous"
     ]
 
     def __init__(self):

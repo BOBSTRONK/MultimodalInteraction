@@ -16,7 +16,7 @@ gestures_per_class = 2
 
 # initializes the webcam for video capture
 # 0 refers the default webcam of the system
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 # check directory of classes exists or not, if not, create the directory
 for class_label in classes:
