@@ -10,7 +10,7 @@ import collections
 def main():
     click_detector = click_keyPress_detection.ClickKeyPressDetector()
     voice_recognizer = voice_recognition.VoiceRecognizer()
-    gesture_detector = gesture_detection.GestureRecognizer()
+    gesture_detector = gesture_detection.GestureRecognizer(use_gpu=False)
 
     frame_queue = collections.deque(maxlen=1)  # Use deque with maxlen to keep only the latest frame
 
