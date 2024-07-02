@@ -1,11 +1,51 @@
-import click_keyPress_detection
-import gesture_detection
-import voice_recognition
+import Models.click_keyPress_detection as click_keyPress_detection
+import Models.gesture_detection as gesture_detection
+import Models.voice_recognition as voice_recognition
 
 import cv2
 import time
 import threading
+import subprocess
 import collections
+
+presentationPath = "/Users/jngelena/Desktop/MultimodalInteraction/presentation.pptx"
+
+print(presentationPath)
+# AppleScript commands to control PowerPoint
+script = f"""
+tell application "Microsoft PowerPoint"
+    activate
+    open "{presentationPath}"
+    set slideShowSettings to slide show settings of active presentation
+    set starting slide of slideShowSettings to 4
+    set ending slide of slideShowSettings to 4
+    run slide show slideShowSettings
+end tell
+"""
+
+subprocess.run(["osascript", "-e", script])
+
+
+# Move to the next slide
+script_next = """
+tell application "Microsoft PowerPoint"
+	go to next slide slide show view of slide show window 1
+end tell
+"""
+
+script_previous = """
+tell application "Microsoft PowerPoint"
+	go to previous slide slide show view of slide show window 1
+end tell
+"""
+
+'''
+subprocess.run(["osascript", "-e", script_next])
+time.sleep(2)
+subprocess.run(["osascript", "-e", script_previous])
+time.sleep(2)
+subprocess.run(["osascript", "-e", script_next])
+'''
 
 def main():
     click_detector = click_keyPress_detection.ClickKeyPressDetector()
@@ -38,23 +78,27 @@ def main():
         if frame_queue:
             frame = frame_queue.pop()
             frame = gesture_detector.process_frame(frame)
-            cv2.imshow("frame", frame)
+            #cv2.imshow("frame", frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-
+        
+        #priority
         detected_value = None
         if voice_recognizer.value:
             detected_value = voice_recognizer.value
             voice_recognizer.value = None
         elif click_detector.value:
-            detected_value = click_detector.value
+            #detected_value = click_detector.value
             click_detector.value = None
         elif gesture_detector.value:
             detected_value = gesture_detector.value
             gesture_detector.value = None
 
-        if detected_value: 
-            # if detected_value == 'previous' do left
+        if detected_value == 'previous':
+            subprocess.run(["osascript", "-e", script_previous])
+            print(detected_value)
+        elif detected_value == 'next':
+            subprocess.run(["osascript", "-e", script_next])
             print(detected_value)
 
         time.sleep(0.01)  # Small sleep to prevent CPU overuse
@@ -62,4 +106,4 @@ def main():
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    main()
+   main()
