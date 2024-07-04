@@ -25,8 +25,8 @@ test_labels = []
 
 # Specify the persons for training and testing
 train_persons = ["elena1", "elena2", "varma", "cai_cropped", 
-                 "valerio_cropped", "valentino_cropped", "carlo_cropped"] 
-test_persons = ["daniele", "emanuele"]
+                 "valerio_cropped", "valentino_cropped", "carlo_cropped", "alba"] 
+test_persons = ["daniele", "emanuele", "stefano"]
 
 # Iterate all the images in the directory
 for dir_ in os.listdir(DATA_DIR):

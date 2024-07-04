@@ -1,6 +1,7 @@
 import pickle
 
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import numpy as np
@@ -16,16 +17,28 @@ x_test = np.asarray(test_data_dict["data"])
 y_test = np.asarray(test_data_dict["labels"])
 
 # Train the model using training data
-model = RandomForestClassifier()
-model.fit(x_train, y_train)
+model_RFC = RandomForestClassifier()
+model_RFC.fit(x_train, y_train)
 
 # Use trained model to make predictions on the testing data
-y_predict = model.predict(x_test)
+y_predict_RFC = model_RFC.predict(x_test)
 
 # Calculate accuracy of the model predictions
-score = accuracy_score(y_predict, y_test)
-print("{}% of samples were classified correctly!".format(score * 100))
+score_RFC = accuracy_score(y_predict_RFC, y_test)
+print("{}% of samples were classified correctly!".format(score_RFC * 100))
 
+mode_svm = SVC()
+mode_svm.fit(x_train, y_train)
+
+y_predict_svm = mode_svm.predict(x_test)
+
+score_svm = accuracy_score(y_predict_svm, y_test)
+print("{}% of samples were classified correctly!".format(score_svm * 100))
+
+if score_RFC > score_svm:
+    model = model_RFC
+else:
+    model = mode_svm
 # Save the trained model to a file
 with open("model.p", "wb") as f:
     pickle.dump({"model": model}, f)
