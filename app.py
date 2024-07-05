@@ -79,8 +79,10 @@ def process_presentation():
     # This is useful for background tasks that should not prevent the program from terminating.
     threading.Thread(target=click_detector.start_listening, daemon=True).start()
     # if user choice to use voice contro, then it will start to listening
+    print(is_on)
     if is_on:
         threading.Thread(target=voice_recognizer.microphone, daemon=True).start()
+    print("not voice's problem")
 
     def capture_frames():
         cap = cv2.VideoCapture(0)  # need to change 0 or 1
@@ -137,14 +139,8 @@ def voice_control_switch():
     global is_on
 
     if is_on:
-        voice_control_button.config(
-            text="❎",
-        )
         is_on = False
     else:
-        voice_control_button.config(
-            text="✅",
-        )
         is_on = True
 
 
@@ -177,7 +173,7 @@ def open_file_dialog():
     # if a file path is selected
     if file_path:
         # display the path of the selected file
-        selected_file_label.config(text="Selected File: " + file_path)
+        selected_file_label.configure(text="Selected File: " + file_path)
         filePath = file_path
 
 
@@ -221,7 +217,13 @@ left_frame = ctk.CTkFrame(root, fg_color=left_panel_color, width=300, height=400
 left_frame.pack(side="left", fill="y")
 
 # Add elements to the left frame
-welcome_label = ctk.CTkLabel(left_frame, text="   Hands-Free Presentation   ", font=("Helvetica", 26, "bold"), text_color=white, justify=tk.LEFT)
+welcome_label = ctk.CTkLabel(
+    left_frame,
+    text="   Hands-Free Presentation   ",
+    font=("Helvetica", 26, "bold"),
+    text_color=white,
+    justify=tk.LEFT,
+)
 welcome_label.pack(padx=12, pady=30)
 
 description_label = ctk.CTkLabel(
@@ -229,7 +231,7 @@ description_label = ctk.CTkLabel(
     text="  Integrating Gesture and Voice Control with PowerPoint\n",
     font=("Helvetica", 20),
     text_color=white,
-    wraplength=300
+    wraplength=300,
 )
 description_label.pack(padx=25, anchor="w")
 
@@ -238,7 +240,7 @@ description_label = ctk.CTkLabel(
     text=(
         "- This is an application that allows you to control your PowerPoint presentation using gestures or voice.\n\n"
         "- You can choose the gesture to control the application and make sure that when you perform the gesture, you can be captured by camera.\n\n"
-        "- Is able to disable voice\n\n" #fix
+        "- Is able to disable voice\n\n"  # fix
         "- Press the start button, the application will start to recognize your gesture and voice."
     ),
     font=("Helvetica", 16),
@@ -258,13 +260,17 @@ details_label = ctk.CTkLabel(
     text="Choose the Gesture",
     font=("Helvetica", 18, "bold"),
 )
-details_label.pack(padx=40, pady=(30,15), anchor="nw")
+details_label.pack(padx=40, pady=(30, 15), anchor="nw")
+
 
 # Function to update the image based on the selected gesture
 def update_image_next(*args):
     selected_gesture = default_next_gesture_value.get()
     next_gesture_image_label.configure(image=gesture_images_next[selected_gesture])
-    next_gesture_image_label.image = gesture_images_next[selected_gesture]  # Keep a reference to the image to prevent garbage collection
+    next_gesture_image_label.image = gesture_images_next[
+        selected_gesture
+    ]  # Keep a reference to the image to prevent garbage collection
+
 
 # Create a frame to hold the "gesture for next" label and button
 gesture_next_select_frame = ctk.CTkFrame(right_frame, fg_color="transparent")
@@ -293,27 +299,35 @@ select_next_gesture_label = ctk.CTkLabel(
     gesture_next_select_frame,
     text="Select the 'Next' Gesture",
     font=("Helvetica", 15),
-    fg_color="transparent" 
+    fg_color="transparent",
 )
 # Create the option menu
 select_next_gesture_menu = ctk.CTkOptionMenu(
-    gesture_next_select_frame, 
-    variable=default_next_gesture_value, 
+    gesture_next_select_frame,
+    variable=default_next_gesture_value,
     values=Options_next,
 )
 # Pack the widgets
-select_next_gesture_label.pack(side=ctk.LEFT, padx=(0, 15))  # Add space between label and menu
+select_next_gesture_label.pack(
+    side=ctk.LEFT, padx=(0, 15)
+)  # Add space between label and menu
 select_next_gesture_menu.pack(side=ctk.LEFT)
 
 next_gesture_image_label = ctk.CTkLabel(right_frame, image=next_1_left, text="")
 next_gesture_image_label.pack()
 update_image_next()
 
+
 # Create a frame to hold the "gesture for previous" label and button
 def update_image_previous(*args):
     selected_gesture = default_previous_gesture_value.get()
-    previous_gesture_image_label.configure(image=gesture_images_previous[selected_gesture])
-    previous_gesture_image_label.image = gesture_images_previous[selected_gesture]  # Keep a reference to the image to prevent garbage collection
+    previous_gesture_image_label.configure(
+        image=gesture_images_previous[selected_gesture]
+    )
+    previous_gesture_image_label.image = gesture_images_previous[
+        selected_gesture
+    ]  # Keep a reference to the image to prevent garbage collection
+
 
 gesture_previous_select_frame = ctk.CTkFrame(right_frame, fg_color="transparent")
 gesture_previous_select_frame.pack(pady=10, padx=25, anchor="w")
@@ -338,46 +352,51 @@ select_previous_gesture_label = ctk.CTkLabel(
     gesture_previous_select_frame,
     text="Select the 'Previous' Gesture",
     font=("Helvetica", 15),
-    fg_color="transparent"
+    fg_color="transparent",
 )
 # Create the option menu
 select_previous_gesture_menu = ctk.CTkOptionMenu(
-    gesture_previous_select_frame, 
-    variable=default_previous_gesture_value, 
+    gesture_previous_select_frame,
+    variable=default_previous_gesture_value,
     values=Options_previous,
 )
 # Pack the widgets
-select_previous_gesture_label.pack(side=ctk.LEFT, padx=(0, 10))  # Add space between label and menu
+select_previous_gesture_label.pack(
+    side=ctk.LEFT, padx=(0, 10)
+)  # Add space between label and menu
 select_previous_gesture_menu.pack(side=ctk.LEFT)
 
-previous_gesture_image_label = ctk.CTkLabel(right_frame, image=previous_1_right, text="")
+previous_gesture_image_label = ctk.CTkLabel(
+    right_frame, image=previous_1_right, text=""
+)
 previous_gesture_image_label.pack()
 update_image_previous()
 
 # create a container for Voice recognition
 voice_recognition_frame = ctk.CTkFrame(right_frame, fg_color="transparent")
-voice_recognition_frame.pack(pady=(10,0), padx=40, anchor="w")
+voice_recognition_frame.pack(pady=(10, 0), padx=40, anchor="w")
 
 use_voice_recognition_label = ctk.CTkLabel(
     # parent widget
     voice_recognition_frame,
     text="Use Voice Recognition:  ",
-    font=(
-        "Helvetica",
-        15,
-        "bold"
-    )
+    font=("Helvetica", 15, "bold"),
 )
 use_voice_recognition_label.pack(side=ctk.LEFT, pady=10)
 
-def switcher():
-	pass
 
-switch_var = ctk.StringVar(value="on")
+switch_var = ctk.StringVar(value="false")
 
-my_switch = ctk.CTkSwitch(voice_recognition_frame, text="", command=switcher,
-	variable=switch_var, onvalue="on", offvalue="off",switch_width=46,
-	switch_height=23,)
+my_switch = ctk.CTkSwitch(
+    voice_recognition_frame,
+    text="",
+    command=voice_control_switch,
+    variable=switch_var,
+    onvalue="on",
+    offvalue="off",
+    switch_width=46,
+    switch_height=23,
+)
 my_switch.pack(side=ctk.LEFT, padx=5)
 
 file_select_frame = ctk.CTkFrame(right_frame, fg_color="transparent")
@@ -387,11 +406,7 @@ select_file_label = ctk.CTkLabel(
     # parent widget
     file_select_frame,
     text="Select the PowerPoint ",
-    font=(
-        "Helvetica",
-        15,
-        "bold"
-    )
+    font=("Helvetica", 15, "bold"),
 )
 select_file_label.pack(side=ctk.LEFT, pady=5)
 select_file_button = ctk.CTkButton(
@@ -403,10 +418,14 @@ select_file_button = ctk.CTkButton(
     ),
     command=open_file_dialog,
     width=8,
-    fg_color="white"
+    fg_color="white",
 )
 select_file_button.pack(side=ctk.LEFT, padx=1)
 
+selected_file_frame = ctk.CTkFrame(right_frame, fg_color="transparent")
+selected_file_frame.pack(pady=5, padx=40, anchor="w")
+selected_file_label = ctk.CTkLabel(selected_file_frame, text="Select File Path: ")
+selected_file_label.pack(side=ctk.LEFT)
 
 start_detection_button = ctk.CTkButton(
     right_frame,
@@ -414,6 +433,7 @@ start_detection_button = ctk.CTkButton(
     fg_color="white",
     text_color="black",
     font=("Helvetica", 18, "bold"),
+    command=process_presentation,
 )
 start_detection_button.pack(pady=20)
 
