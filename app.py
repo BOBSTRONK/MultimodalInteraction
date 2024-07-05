@@ -22,6 +22,7 @@ import time
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
+import customtkinter as ctk
 import subprocess
 from PIL import Image, ImageTk
 
@@ -199,7 +200,7 @@ def update_image_previous(*args):
 
 
 # Initialize the main application window
-root = tk.Tk()
+root = ctk.CTk()
 root.title("MPPTC")
 
 # Set the window size and make it non-resizable
@@ -208,62 +209,66 @@ root.resizable(True, False)
 
 # Define colors
 # white
-background_color = "#ffffff"
+white = "#ffffff"
 # celeste
-left_panel_color = "#4285F4"
+left_panel_color = "#81aef7"
 button_color = "#4285F4"
 button_text_color = "#000308"
 
 # Create a frame for the left panel
 # Frame is like a container
-left_frame = tk.Frame(root, bg=left_panel_color, width=300, height=400)
-left_frame.pack(side=tk.LEFT, fill=tk.BOTH)
+left_frame = ctk.CTkFrame(root, fg_color=left_panel_color, width=300, height=400)
+left_frame.pack(side="left", fill="y")
 
-# Add text to the left panel
-welcome_label = tk.Label(
+# Add elements to the left frame
+welcome_label = ctk.CTkLabel(left_frame, text="   Hands-Free Presentation   ", font=("Helvetica", 26, "bold"), text_color=white, justify=tk.LEFT)
+welcome_label.pack(padx=12, pady=30)
+
+description_label = ctk.CTkLabel(
     left_frame,
-    text="Welcome to Multimodal PPT controller ",
-    font=("Helvetica", 20, "bold"),
-    bg=left_panel_color,
-    fg="white",
+    text="  Integrating Gesture and Voice Control with PowerPoint\n",
+    font=("Helvetica", 20),
+    text_color=white,
+    wraplength=300
 )
-welcome_label.pack(padx=20, pady=20, anchor="w")
+description_label.pack(padx=25, anchor="w")
 
-description_label = tk.Label(
+description_label = ctk.CTkLabel(
     left_frame,
     text=(
         "- This is an application that allows you to control your PowerPoint presentation using gestures or voice.\n\n"
-        "- Press the start button, the application will start to recognize your gesture and voice. \n"
-        "- You can choose the gesture to control the application and make sure that when you perform the gesture, you can be captured by your computer's camera. "
+        "- You can choose the gesture to control the application and make sure that when you perform the gesture, you can be captured by camera.\n\n"
+        "- Is able to disable voice\n\n" #fix
+        "- Press the start button, the application will start to recognize your gesture and voice."
     ),
     font=("Helvetica", 16),
-    bg=left_panel_color,
-    fg="white",
     justify=tk.LEFT,
-    wraplength=260,
+    text_color=white,
+    wraplength=300,
 )
 description_label.pack(padx=20, pady=10, anchor="w")
 
 # Create a frame for the right panel
-right_frame = tk.Frame(root, width=300, height=400)
-right_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+right_frame = ctk.CTkFrame(root, width=560, height=400)
+right_frame.pack(side="right", fill="both", expand=True)
 
 # Add a label to the right panel34
-details_label = tk.Label(
+details_label = ctk.CTkLabel(
     right_frame,
     text="Choose the Gesture",
-    font=("Helvetica", 15, "bold"),
-    fg="white",
+    font=("Helvetica", 18, "bold"),
 )
-details_label.pack(padx=20, pady=20, anchor="nw")
+details_label.pack(padx=40, pady=(30,15), anchor="nw")
+
+# Function to update the image based on the selected gesture
+def update_image_next(*args):
+    selected_gesture = default_next_gesture_value.get()
+    next_gesture_image_label.configure(image=gesture_images_next[selected_gesture])
+    next_gesture_image_label.image = gesture_images_next[selected_gesture]  # Keep a reference to the image to prevent garbage collection
 
 # Create a frame to hold the "gesture for next" label and button
-gesture_next_select_frame = tk.Frame(right_frame)
-gesture_next_select_frame.pack(pady=5, padx=40, anchor="w")
-
-# Add input fields to the right panel
-entry_style = ttk.Style()
-entry_style.configure("Custom.TEntry", fieldbackground="white", borderwidth=0)
+gesture_next_select_frame = ctk.CTkFrame(right_frame, fg_color="transparent")
+gesture_next_select_frame.pack(pady=10, padx=40, anchor="w")
 
 next_1_left = image_processing("images/next1_left.png")
 next_2_right = image_processing("images/next2_right.png")
@@ -279,32 +284,39 @@ Options_next = [
 ]
 
 # to get the value of the OptionMenu
-default_next_gesture_value = tk.StringVar()
+default_next_gesture_value = ctk.StringVar()
 # default value for select gesture menu
 default_next_gesture_value.set(Options_next[0])
 default_next_gesture_value.trace_add("write", update_image_next)
-select_next_gesture_menu = tk.OptionMenu(
-    gesture_next_select_frame, default_next_gesture_value, *Options_next
-)
-select_next_gesture_label = tk.Label(
-    # parent widget
+# Create the label
+select_next_gesture_label = ctk.CTkLabel(
     gesture_next_select_frame,
     text="Select the 'Next' Gesture",
-    font=(
-        "Helvetica",
-        15,
-    ),
-    fg="white",
+    font=("Helvetica", 15),
+    fg_color="transparent" 
 )
-select_next_gesture_label.pack(side=tk.LEFT)
-select_next_gesture_menu.pack(side=tk.LEFT)
+# Create the option menu
+select_next_gesture_menu = ctk.CTkOptionMenu(
+    gesture_next_select_frame, 
+    variable=default_next_gesture_value, 
+    values=Options_next,
+)
+# Pack the widgets
+select_next_gesture_label.pack(side=ctk.LEFT, padx=(0, 15))  # Add space between label and menu
+select_next_gesture_menu.pack(side=ctk.LEFT)
 
-next_gesture_image_label = tk.Label(right_frame, image=next_1_left)
+next_gesture_image_label = ctk.CTkLabel(right_frame, image=next_1_left, text="")
 next_gesture_image_label.pack()
+update_image_next()
 
-# Create a frame to hold the "gesture for next" label and button
-gesture_previous_select_frame = tk.Frame(right_frame)
-gesture_previous_select_frame.pack(pady=5, padx=40, anchor="w")
+# Create a frame to hold the "gesture for previous" label and button
+def update_image_previous(*args):
+    selected_gesture = default_previous_gesture_value.get()
+    previous_gesture_image_label.configure(image=gesture_images_previous[selected_gesture])
+    previous_gesture_image_label.image = gesture_images_previous[selected_gesture]  # Keep a reference to the image to prevent garbage collection
+
+gesture_previous_select_frame = ctk.CTkFrame(right_frame, fg_color="transparent")
+gesture_previous_select_frame.pack(pady=10, padx=25, anchor="w")
 
 previous_1_right = image_processing("images/previous1_right.png")
 previous_2_left = image_processing("images/previous2_left.png")
@@ -318,131 +330,91 @@ Options_previous = [
     "Left/Right Hand Thumb Toward",
 ]
 
-
-default_previous_gesture_value = tk.StringVar()
-# default value for select gesture menu
+default_previous_gesture_value = ctk.StringVar()
 default_previous_gesture_value.set(Options_previous[0])
 default_previous_gesture_value.trace_add("write", update_image_previous)
-select_previous_gesture_menu = tk.OptionMenu(
-    gesture_previous_select_frame, default_previous_gesture_value, *Options_previous
-)
-select_previous_gesture_label = tk.Label(
-    # parent widget
+# Create the label
+select_previous_gesture_label = ctk.CTkLabel(
     gesture_previous_select_frame,
     text="Select the 'Previous' Gesture",
-    font=(
-        "Helvetica",
-        15,
-    ),
-    fg="white",
+    font=("Helvetica", 15),
+    fg_color="transparent"
 )
-select_previous_gesture_label.pack(side=tk.LEFT)
-select_previous_gesture_menu.pack(side=tk.LEFT)
+# Create the option menu
+select_previous_gesture_menu = ctk.CTkOptionMenu(
+    gesture_previous_select_frame, 
+    variable=default_previous_gesture_value, 
+    values=Options_previous,
+)
+# Pack the widgets
+select_previous_gesture_label.pack(side=ctk.LEFT, padx=(0, 10))  # Add space between label and menu
+select_previous_gesture_menu.pack(side=ctk.LEFT)
 
-previous_gesture_image_label = tk.Label(right_frame, image=previous_1_right)
-previous_gesture_image_label.pack(pady=(0, 10))
+previous_gesture_image_label = ctk.CTkLabel(right_frame, image=previous_1_right, text="")
+previous_gesture_image_label.pack()
+update_image_previous()
 
 # create a container for Voice recognition
-voice_recognition_frame = tk.Frame(right_frame, bd=0, highlightthickness=0)
-voice_recognition_frame.pack(pady=5, padx=40, anchor="w")
+voice_recognition_frame = ctk.CTkFrame(right_frame, fg_color="transparent")
+voice_recognition_frame.pack(pady=(10,0), padx=40, anchor="w")
 
-use_voice_recognition_label = tk.Label(
+use_voice_recognition_label = ctk.CTkLabel(
     # parent widget
     voice_recognition_frame,
     text="Use Voice Recognition:  ",
     font=(
         "Helvetica",
         15,
-    ),
-    fg="white",
+        "bold"
+    )
 )
-use_voice_recognition_label.pack(side=tk.LEFT)
+use_voice_recognition_label.pack(side=ctk.LEFT, pady=10)
 
+def switcher():
+	pass
 
-toggle_on_image = Image.open(
-    "/Users/weidongcai/Downloads/green-button-on-21528-Photoroom.png"
-)
-toggle_off_image = Image.open(
-    "/Users/weidongcai/Downloads/button-off-red-switch-toggle-21532-Photoroom (1).png",
-)
+switch_var = ctk.StringVar(value="on")
 
+my_switch = ctk.CTkSwitch(voice_recognition_frame, text="", command=switcher,
+	variable=switch_var, onvalue="on", offvalue="off",switch_width=46,
+	switch_height=23,)
+my_switch.pack(side=ctk.LEFT, padx=5)
 
-toggle_off_image_resize_image = toggle_off_image.resize((64, 34))
-toggle_off_img = ImageTk.PhotoImage(toggle_off_image_resize_image)
-toggle_on_image_resize_image = toggle_on_image.resize((64, 34))
-toggle_on_img = ImageTk.PhotoImage(toggle_on_image_resize_image)
-voice_control_button = tk.Button(
-    voice_recognition_frame,
-    text="❎",
-    # font=(
-    #     "Helvatica",
-    #     15,
-    # ),
-    bd=0,
-    borderwidth=0,
-    highlightthickness=0,
-    relief=tk.FLAT,
-    command=voice_control_switch,
-)
-voice_control_button.pack(pady=10)
+file_select_frame = ctk.CTkFrame(right_frame, fg_color="transparent")
+file_select_frame.pack(pady=5, padx=40, anchor="w")
 
-
-# Create a frame to hold the label and button
-file_select_frame = tk.Frame(right_frame)
-file_select_frame.pack(pady=(10, 10), padx=40, anchor="w")
-
-
-select_next_gesture_label = tk.Label(
+select_file_label = ctk.CTkLabel(
     # parent widget
     file_select_frame,
-    text="Select the PowerPoint",
+    text="Select the PowerPoint ",
     font=(
         "Helvetica",
         15,
-    ),
-    fg="white",
+        "bold"
+    )
 )
-
-select_next_gesture_label.pack(side=tk.LEFT)
-# Add a button with an icon to the right panel (icon represented as text here)
-select_file_button = tk.Button(
-    file_select_frame,
+select_file_label.pack(side=ctk.LEFT, pady=5)
+select_file_button = ctk.CTkButton(
+    master=file_select_frame,
     text="📂",
-    width=2,
-    bg="white",
-    command=open_file_dialog,
-)
-select_file_button.pack(side=tk.LEFT, padx=5)
-# select_file_label.grid(row=0,column=0)
-
-selected_file_label = tk.Label(
-    right_frame,
-    text="Selected File:",
     font=(
         "Helvetica",
-        12,
+        25,
     ),
-    fg="white",
+    command=open_file_dialog,
+    width=8,
+    fg_color="white"
 )
-selected_file_label.pack()
+select_file_button.pack(side=ctk.LEFT, padx=1)
 
-# Add a button to the right panel for start detection
-start_detection_button = tk.Button(
+
+start_detection_button = ctk.CTkButton(
     right_frame,
     text="Start Detection",
-    bg="white",
-    fg="black",
-    font=("Helvetica", 12, "bold"),
-    relief=tk.FLAT,
-    command=start_process_presentation,
+    fg_color="white",
+    text_color="black",
+    font=("Helvetica", 18, "bold"),
 )
 start_detection_button.pack(pady=20)
 
-# image = Image.open("/Users/weidongcai/Downloads/WechatIMG208501.png")
-# resize_image = image.resize((100, 100))
-# img = ImageTk.PhotoImage(resize_image)
-# image_label = tk.Label(right_frame, image=img)
-# image_label.pack()
-
-# Run the application
 root.mainloop()
