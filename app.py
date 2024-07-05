@@ -61,9 +61,12 @@ def process_presentation():
         "Left/Right Hand Thumb Toward": "previous2",
     }
     gestureToDetectForNext = Options_next_correspondence[gesture_for_next_slide]
+    print(gestureToDetectForNext)
+
     gestureToDetectForPrevious = Options_previous_correspondence[
         gesture_for_previous_slide
     ]
+    print(gestureToDetectForPrevious)
 
     frame_queue = collections.deque(
         maxlen=1
@@ -258,10 +261,8 @@ gesture_next_select_frame.pack(pady=5, padx=40, anchor="w")
 entry_style = ttk.Style()
 entry_style.configure("Custom.TEntry", fieldbackground="white", borderwidth=0)
 
-next_1_left = image_processing("/Users/weidongcai/Downloads/next1_left.png")
-next_1_right = image_processing("/Users/weidongcai/Downloads/next1_right.png")
-next_2_left = image_processing("/Users/weidongcai/Downloads/next2_left.png")
-next_2_right = image_processing("/Users/weidongcai/Downloads/next2_right.png")
+next_1_left = image_processing("images/next1_left.png")
+next_2_right = image_processing("images/next2_right.png")
 
 
 gesture_images_next = {
@@ -301,10 +302,8 @@ next_gesture_image_label.pack()
 gesture_previous_select_frame = tk.Frame(right_frame)
 gesture_previous_select_frame.pack(pady=5, padx=40, anchor="w")
 
-previous_1_left = image_processing("/Users/weidongcai/Downloads/previous1_left.png")
-previous_1_right = image_processing("/Users/weidongcai/Downloads/previous1_right.png")
-previous_2_left = image_processing("/Users/weidongcai/Downloads/previous2_left.png")
-previous_2_right = image_processing("/Users/weidongcai/Downloads/previous2_right.png")
+previous_1_right = image_processing("images/previous1_right.png")
+previous_2_left = image_processing("images/previous2_left.png")
 
 gesture_images_previous = {
     "Left/Right Hand Index Point": previous_1_right,
@@ -336,7 +335,7 @@ select_previous_gesture_label = tk.Label(
 select_previous_gesture_label.pack(side=tk.LEFT)
 select_previous_gesture_menu.pack(side=tk.LEFT)
 
-previous_gesture_image_label = tk.Label(right_frame, image=previous_1_left)
+previous_gesture_image_label = tk.Label(right_frame, image=previous_1_right)
 previous_gesture_image_label.pack(pady=(0, 10))
 
 # create a container for Voice recognition
