@@ -136,10 +136,14 @@ def voice_control_switch():
     global is_on
 
     if is_on:
-        voice_control_button.config(image=toggle_off_img)
+        voice_control_button.config(
+            text="❎",
+        )
         is_on = False
     else:
-        voice_control_button.config(image=toggle_on_img)
+        voice_control_button.config(
+            text="✅",
+        )
         is_on = True
 
 
@@ -369,8 +373,7 @@ toggle_on_image_resize_image = toggle_on_image.resize((64, 34))
 toggle_on_img = ImageTk.PhotoImage(toggle_on_image_resize_image)
 voice_control_button = tk.Button(
     voice_recognition_frame,
-    image=toggle_off_img,
-    # text="Off",
+    text="❎",
     # font=(
     #     "Helvatica",
     #     15,
