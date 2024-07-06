@@ -41,10 +41,9 @@ tell application "Microsoft PowerPoint"
 end tell
 """
 
-
 def process_presentation():
     global is_on
-    click_detector = click_keyPress_detection.ClickKeyPressDetector()
+    #click_detector = click_keyPress_detection.ClickKeyPressDetector()
     voice_recognizer = voice_recognition.VoiceRecognizer()
     gesture_detector = gesture_detection.GestureRecognizer(use_gpu=False)
     # open the power point
@@ -77,7 +76,7 @@ def process_presentation():
     # daemon thread. Daemon threads run in the background and do not block the program from exiting.
     # If all non-daemon threads have finished, the program can exit even if daemon threads are still running.
     # This is useful for background tasks that should not prevent the program from terminating.
-    threading.Thread(target=click_detector.start_listening, daemon=True).start()
+    #threading.Thread(target=click_detector.start_listening, daemon=True).start()
     # if user choice to use voice contro, then it will start to listening
     print(is_on)
     if is_on:
@@ -85,7 +84,7 @@ def process_presentation():
     print("not voice's problem")
 
     def capture_frames():
-        cap = cv2.VideoCapture(0)  # need to change 0 or 1
+        cap = cv2.VideoCapture(1)  # need to change 0 or 1
         while True:
             ret, frame = cap.read()
             frame = cv2.flip(frame, 1)
@@ -94,7 +93,7 @@ def process_presentation():
     # Start frame capture in a separate thread
     threading.Thread(target=capture_frames, daemon=True).start()
 
-    while True:
+    def update():
         # Process frames on the main thread
         if frame_queue:
             frame = frame_queue.pop()
@@ -103,18 +102,12 @@ def process_presentation():
                 gestureToDetectForNext,
                 gestureToDetectForPrevious,
             )
-            # cv2.imshow("frame", frame)
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
-
+        
         # priority
         detected_value = None
         if voice_recognizer.value:
             detected_value = voice_recognizer.value
             voice_recognizer.value = None
-        elif click_detector.value:
-            # detected_value = click_detector.value
-            click_detector.value = None
         elif gesture_detector.value:
             detected_value = gesture_detector.value
             gesture_detector.value = None
@@ -126,13 +119,9 @@ def process_presentation():
             subprocess.run(["osascript", "-e", script_next])
             print(detected_value)
 
-        time.sleep(0.01)  # Small sleep to prevent CPU overuse
-
-    cv2.destroyAllWindows()
-
-
-def start_process_presentation():
-    threading.Thread(target=process_presentation, daemon=True).start()
+        #time.sleep(0.01)  # Small sleep to prevent CPU overuse
+        root.after(1, update)
+    update()
 
 
 def voice_control_switch():
@@ -173,7 +162,7 @@ def open_file_dialog():
     # if a file path is selected
     if file_path:
         # display the path of the selected file
-        selected_file_label.configure(text="Selected File: " + file_path)
+        selected_file_label.configure(text=file_path)
         filePath = file_path
 
 
@@ -233,20 +222,20 @@ description_label = ctk.CTkLabel(
     text_color=white,
     wraplength=300,
 )
-description_label.pack(padx=25, anchor="w")
+description_label.pack(padx=(40,15), anchor="w")
 
 description_label = ctk.CTkLabel(
     left_frame,
     text=(
         "- This is an application that allows you to control your PowerPoint presentation using gestures or voice.\n\n"
         "- You can choose the gesture to control the application and make sure that when you perform the gesture, you can be captured by camera.\n\n"
-        "- Is able to disable voice\n\n"  # fix
+        "- You can activate or disable speech recognition.\n\n"  # fix
         "- Press the start button, the application will start to recognize your gesture and voice."
     ),
     font=("Helvetica", 16),
     justify=tk.LEFT,
     text_color=white,
-    wraplength=300,
+    wraplength=320,
 )
 description_label.pack(padx=20, pady=10, anchor="w")
 
@@ -260,7 +249,7 @@ details_label = ctk.CTkLabel(
     text="Choose the Gesture",
     font=("Helvetica", 18, "bold"),
 )
-details_label.pack(padx=40, pady=(30, 15), anchor="nw")
+details_label.pack(padx=40, pady=(30, 2), anchor="nw")
 
 
 # Function to update the image based on the selected gesture
@@ -330,7 +319,7 @@ def update_image_previous(*args):
 
 
 gesture_previous_select_frame = ctk.CTkFrame(right_frame, fg_color="transparent")
-gesture_previous_select_frame.pack(pady=10, padx=25, anchor="w")
+gesture_previous_select_frame.pack(pady=(20,10), padx=25, anchor="w")
 
 previous_1_right = image_processing("images/previous1_right.png")
 previous_2_left = image_processing("images/previous2_left.png")
@@ -379,7 +368,7 @@ voice_recognition_frame.pack(pady=(10, 0), padx=40, anchor="w")
 use_voice_recognition_label = ctk.CTkLabel(
     # parent widget
     voice_recognition_frame,
-    text="Use Voice Recognition:  ",
+    text="Use Speech Recognition:  ",
     font=("Helvetica", 15, "bold"),
 )
 use_voice_recognition_label.pack(side=ctk.LEFT, pady=10)
@@ -423,9 +412,9 @@ select_file_button = ctk.CTkButton(
 select_file_button.pack(side=ctk.LEFT, padx=1)
 
 selected_file_frame = ctk.CTkFrame(right_frame, fg_color="transparent")
-selected_file_frame.pack(pady=5, padx=40, anchor="w")
+selected_file_frame.pack(pady=0, padx=40, anchor="w")
 selected_file_label = ctk.CTkLabel(selected_file_frame, text="Select File Path: ")
-selected_file_label.pack(side=ctk.LEFT)
+selected_file_label.pack(side=ctk.LEFT, pady=0)
 
 start_detection_button = ctk.CTkButton(
     right_frame,
