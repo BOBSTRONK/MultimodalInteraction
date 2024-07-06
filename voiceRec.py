@@ -1,9 +1,62 @@
 import os
+import re
 import subprocess
 import tempfile
 import wave
 import sounddevice as sd
 
+
+keywords_next = [
+        "switch to the next slide",
+        "go to the next slide",
+        "next slide",
+        "change to the next slide",
+        "move to the next slide",
+        "switch to the next page",
+        "go to the next page",
+        "next page",
+        "change to the next page",
+        "move to the next page",
+        "next slide please",
+        "next page please",
+        "go on to the next slide",
+        "go on to the next page",
+        "go on",
+        "go next",
+    ]
+
+keywords_previous = [
+        "switch to the previous slide",
+        "go to the previous slide",
+        "previous slide",
+        "change to the previous slide",
+        "move to the previous slide",
+        "switch to the previous page",
+        "go to the previous page",
+        "previous page",
+        "change to the previous page",
+        "move to the previous page",
+        "previous slide please",
+        "previous page please",
+        "go back to the previous slide",
+        "go back to the previous page",
+        "go back",
+        "go previous",
+    ]
+
+def check_for_keywords(sentence):
+    sentence = sentence.lower().strip()
+    for keyword in keywords_next:
+        if sentence == keyword:
+            os.system(
+                        'osascript -e \'display notification "Switch to Next slide" with title "Voice recognition"\''
+                    )
+
+    for keyword in keywords_previous:
+        if sentence == keyword:
+            os.system(
+                        'osascript -e \'display notification "Switch to Previous slide" with title "Voice recognition"\''
+                    )
 
 # input_filename: file paths for the input audio
 # output_filename: output text file
@@ -55,8 +108,13 @@ def callback(indata, frames, time, status):
 
         # Print the transcribed text
         with open(output_filename + '.txt', 'r') as file:
-            print(file.read())
-        
+            text_content = file.read().lower()
+            print(text_content)  # Print the transcribed text content
+            sentences = re.split(r'[.!?]', text_content)  # Split text into sentences
+            
+            for sentence in sentences:
+                check_for_keywords(sentence)
+                
         # Clean up temporary files
         os.remove(output_filename + '.txt')
 
@@ -67,9 +125,8 @@ def callback(indata, frames, time, status):
 # 'samplerate = 1600' sets the sampling rate (16000 hz) of the audiot stream
 # sample rate = sample of the audio signal taken per second. determines the quality and frequence range of the audio, higher = better quality
 # with sd.InputStream(callback=callback, dtype='int16', channels=1, samplerate=16000, blocksize=16000*5):
-
-try:
-    # Start recording with a rolling 5-second buffer
+  
+if __name__ == "__main__":
     with sd.InputStream(
         callback=callback,
         dtype="int16",
@@ -80,5 +137,3 @@ try:
         print("Recording... Press Ctrl+C to stop.")
         while True:
             pass
-except KeyboardInterrupt:
-    print("Recording stopped.")
