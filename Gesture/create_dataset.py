@@ -97,10 +97,10 @@ test_data = np.array(test_data)
 test_labels = np.array(test_labels)
 
 # Save train and test data using pickle
-with open("train_data.pickle", "wb") as f:
+with open("./Gesture/train_data.pickle", "wb") as f:
     print("Saving train data to train_data.pickle")
     pickle.dump({"data": train_data, "labels": train_labels}, f)
 
-with open("test_data.pickle", "wb") as f:
+with open("./Gesture/test_data.pickle", "wb") as f:
     print("Saving test data to test_data.pickle")
     pickle.dump({"data": test_data, "labels": test_labels}, f)

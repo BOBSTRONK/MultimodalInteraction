@@ -21,9 +21,8 @@ def crop_images(input_folder, output_folder, crop_box):
             cropped_img.save(os.path.join(output_folder, filename))
             print(f"Cropped {filename} and saved to {output_folder}")
 
-# Example usage
-input_folder = '/Users/jngelena/Desktop/dataset/carlo/previous2'
-output_folder = '/Users/jngelena/Desktop/dataset/carlo_cropped/previous2'
+input_folder = ''
+output_folder = ''
 crop_box = (100, 0, 1600, 700)  # (left, upper, right, lower)
 
 crop_images(input_folder, output_folder, crop_box)
