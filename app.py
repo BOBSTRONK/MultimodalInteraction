@@ -17,7 +17,7 @@ import Models.voice_recognition as voice_recognition
 import collections
 import threading
 import cv2
-import time
+import os
 
 import tkinter as tk
 from tkinter import ttk
@@ -25,6 +25,7 @@ from tkinter import filedialog
 import customtkinter as ctk
 import subprocess
 from PIL import Image, ImageTk
+from pynput import mouse
 
 is_on = False
 filePath = ""
@@ -40,6 +41,21 @@ tell application "Microsoft PowerPoint"
 	go to previous slide slide show view of slide show window 1
 end tell
 """
+
+def on_click(x, y, button, pressed):
+    if pressed:
+        if button == mouse.Button.left:
+            os.system(
+                'osascript -e \'display notification "Switch to Next slide" with title "Mouse click"\''
+            )
+        elif button == mouse.Button.right:
+            os.system(
+                'osascript -e \'display notification "Switch to Previous slide" with title "Mouse click"\''
+            )
+
+def start_mouse_listener():
+    with mouse.Listener(on_click=on_click) as listener:
+        listener.join()
 
 def process_presentation():
     global is_on
@@ -92,6 +108,7 @@ def process_presentation():
 
     # Start frame capture in a separate thread
     threading.Thread(target=capture_frames, daemon=True).start()
+    threading.Thread(target=start_mouse_listener, daemon=True).start()
 
     def update():
         # Process frames on the main thread

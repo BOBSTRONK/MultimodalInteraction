@@ -13,9 +13,9 @@ def transcribe_to_txt(input_filename: str, output_filename: str):
     # necessary command-line arguments to run the transcription tool
     command = [
         # executable
-        "/Users/weidongcai/Documents/multimodalProject/whisper.cpp/main",
+        "whisper.cpp/main",
         "-m",
-        "/Users/weidongcai/Documents/multimodalProject/whisper.cpp/models/ggml-medium.en.bin",
+        "whisper.cpp/models/ggml-medium.en.bin",
         "-f",
         input_filename,
         "-otxt",
@@ -37,36 +37,28 @@ def callback(indata, frames, time, status):
     # Raise for status if required
     if status:
         print(status)
-
-    # Create a tempfile to save the audio to, which will automatically delete itself when closed
-    with tempfile.NamedTemporaryFile(
-        delete=True, suffix=".wav", prefix="audio_", dir="."
-    ) as tmpfile:
+    
+    # Create a tempfile to save the audio to, with autodeletion
+    with tempfile.NamedTemporaryFile(delete=True, suffix='.wav', prefix='audio_', dir='.') as tmpfile:
         # Save the 5 second audio to a .wav file
-        with wave.open(tmpfile.name, "wb") as wav_file:
+        with wave.open(tmpfile.name, 'wb') as wav_file:
             wav_file.setnchannels(1)  # Mono audio
             wav_file.setsampwidth(2)  # 16-bit audio
             wav_file.setframerate(16000)  # Sample rate
-            # write the audio data into temporary file
             wav_file.writeframes(indata)
-
+        
         # Prepare the output filename
-        # remove .wav extention for creating a base name
-        output_filename = tmpfile.name.replace(".wav", "")
-
+        output_filename = tmpfile.name.replace('.wav', '')
+        
         # Transcribe the audio to text using our whisper.cpp wrapper
         transcribe_to_txt(tmpfile.name, output_filename)
 
         # Print the transcribed text
-        try:
-            with open(output_filename + ".txt", "r") as file:
-                # should change this
-                print(file.read())
-        except FileNotFoundError:
-            print(
-                f"File {output_filename + '.txt'} not found. Transcription may have failed."
-            )
-
+        with open(output_filename + '.txt', 'r') as file:
+            print(file.read())
+        
+        # Clean up temporary files
+        os.remove(output_filename + '.txt')
 
 # sd.InputStream is used to open an input audio stream
 # callback specifies a callback function that processes chunks of audio data

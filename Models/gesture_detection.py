@@ -8,7 +8,7 @@ import cv2
 
 class GestureRecognizer:
     # Load the model
-    model_dict = pickle.load(open("./model.p", "rb"))
+    model_dict = pickle.load(open("Gesture/model.p", "rb"))
     model = model_dict["model"]
 
     # BaseOptions in mediapipe library
@@ -59,7 +59,7 @@ class GestureRecognizer:
         self.options = self.GestureRecognizerOptions(
             #  initializes the base options required for the gesture recognizer.
             #  It includes the path to the base model.
-            base_options=self.BaseOptions(model_asset_path="./gesture_recognizer.task"),
+            base_options=self.BaseOptions(model_asset_path="Gesture/gesture_recognizer.task"),
             # process frames in real-time as they are captured from the video stream
             running_mode=self.VisionRunningMode.LIVE_STREAM,
             # This parameter specifies a callback function that will be called whenever
