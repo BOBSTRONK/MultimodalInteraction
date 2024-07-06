@@ -177,6 +177,14 @@ def start_mouse_listener():
     with mouse.Listener(on_click=on_click) as listener:
         listener.join()
 
+def presentation_check():
+    if filePath == "":
+        os.system(
+                'osascript -e  \'display alert "File should not be empty" message "Please select a file"\''
+            )
+    else:
+        process_presentation()
+
 def process_presentation():
     global is_on
     #click_detector = click_keyPress_detection.ClickKeyPressDetector()
@@ -574,7 +582,7 @@ start_detection_button = ctk.CTkButton(
     fg_color="white",
     text_color="black",
     font=("Helvetica", 18, "bold"),
-    command=process_presentation,
+    command=presentation_check,
 )
 start_detection_button.pack(pady=20)
 
