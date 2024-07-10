@@ -30,7 +30,7 @@ from tkinter import filedialog
 import customtkinter as ctk
 import subprocess
 from PIL import Image, ImageTk
-from pynput import mouse
+from pynput import mouse, keyboard
 
 is_on = False
 filePath = ""
@@ -172,8 +172,21 @@ def on_click(x, y, button, pressed):
                 'osascript -e \'display notification "Switch to Previous slide" with title "Mouse click"\''
             )
 
-def start_mouse_listener():
+next_key = ["space", "Return", "Right", "Down", "n"]
+previous_key = ["BackSpace", "Left", "Up", "p"]
+
+def on_press(event):
+    print(event.keysym)
+    if event.keysym in next_key:
+        os.system('osascript -e \'display notification "Switch to Next slide" with title "Keyboard press"\'')
+    elif event.keysym in previous_key:
+        os.system('osascript -e \'display notification "Switch to Previous slide" with title "Keyboard press"\'')
+
+def start_listener():
     with mouse.Listener(on_click=on_click) as listener:
+        listener.join()
+
+    with keyboard.Listener(on_click=on_press) as listener:
         listener.join()
 
 def presentation_check():
@@ -235,7 +248,8 @@ def process_presentation():
 
     # Start frame capture in a separate thread
     threading.Thread(target=capture_frames, daemon=True).start()
-    threading.Thread(target=start_mouse_listener, daemon=True).start()
+    threading.Thread(target=start_listener, daemon=True).start()
+    root.bind("<KeyRelease>", on_press)
 
     if is_on:
         def record():
