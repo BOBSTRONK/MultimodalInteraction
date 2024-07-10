@@ -14,7 +14,6 @@ from functools import partial
 import Models.click_keyPress_detection as click_keyPress_detection
 import Models.gesture_detection as gesture_detection
 import Models.voice_recognition as voice_recognition
-import voiceRec as speech_recognition
 import collections
 import threading
 import cv2
@@ -228,7 +227,7 @@ def process_presentation():
     # print("not voice's problem")
 
     def capture_frames():
-        cap = cv2.VideoCapture(0)  # need to change 0 or 1
+        cap = cv2.VideoCapture(1)  # need to change 0 or 1
         while True:
             ret, frame = cap.read()
             frame = cv2.flip(frame, 1)
