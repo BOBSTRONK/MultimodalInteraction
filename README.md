@@ -1,6 +1,3 @@
-Here’s the updated README with your requested additions:
-
-```markdown
 # Multimodal Interaction
 
 This repository explores multimodal interaction techniques, utilizing tools and frameworks for gesture recognition, voice commands, and other input modalities.
